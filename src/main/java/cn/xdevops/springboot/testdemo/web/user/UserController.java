@@ -1,5 +1,6 @@
 package cn.xdevops.springboot.testdemo.web.user;
 
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +11,11 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequestMapping("/api/users")
+@Api(tags = {"User APIs"})
 public class UserController {
 
     private final UserService userService;
@@ -21,11 +25,20 @@ public class UserController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Get all users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Get all users successfully")
+    })
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping
+    @ApiOperation("Create a new user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Created a new user successfully"),
+            @ApiResponse(code = 400, message = "The user already exist")
+    })
     public ResponseEntity<Void> createNewUser(@RequestBody @Valid User user, UriComponentsBuilder builder) {
         User addedUser = userService
                 .addNewUser(user)
@@ -37,6 +50,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "Get user by id")
+    @ApiImplicitParams(
+            @ApiImplicitParam(name = "id", value="User ID", required = true)
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Found the user by id"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
     public User getUserById(@PathVariable("id") Long id) {
         return userService
                 .getUserById(id)
@@ -45,6 +66,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete user by id")
+    @ApiImplicitParams(
+            @ApiImplicitParam(name = "id", value="User ID", required = true)
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Delete the user by id successfully")
+    })
     public void deleteByUserId(@PathVariable("id") Long id) {
         userService.deleteById(id);
     }
