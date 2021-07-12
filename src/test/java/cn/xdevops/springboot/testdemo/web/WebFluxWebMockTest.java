@@ -10,7 +10,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest(GreetingController.class)
-public class WebFluxWebMockTest {
+class WebFluxWebMockTest {
     @Autowired
     private WebTestClient webTestClient;
 
